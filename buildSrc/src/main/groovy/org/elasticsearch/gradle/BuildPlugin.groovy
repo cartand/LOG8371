@@ -666,7 +666,7 @@ class BuildPlugin implements Plugin<Project> {
                 test.extensions.add('nonInputProperties', nonInputProperties)
 
                 test.workingDir = project.file("${project.buildDir}/testrun/${test.name}")
-                test.maxParallelForks = System.getProperty('tests.jvms', BuildParams.defaultParallel.toString()) as Integer
+                test.maxParallelForks = 1//System.getProperty('tests.jvms', BuildParams.defaultParallel.toString()) as Integer
 
                 test.exclude '**/*$*.class'
 
