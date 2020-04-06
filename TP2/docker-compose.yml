@@ -1,0 +1,50 @@
+version: '2.2'
+services:
+  master:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    container_name: es_master
+    environment:
+      - node.name=es_master
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=node
+      - cluster.initial_master_nodes=es_master
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  node:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    environment:
+      - node.name=node
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es_master
+      - cluster.initial_master_nodes=es_master
+      - node.max_local_storage_nodes=5
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
